@@ -14,7 +14,7 @@ download.file(fileUrl, destfile ="./data/pml-test.csv")
 dateDownloaded <- date()
 train <- read.csv("./data/pml-train.csv", na.strings=c("NA",""))
 test <- read.csv("./data/pml-test.csv", na.strings=c("NA",""))
-head(train)
+#head(train)
 dim(train)
 ```
 
@@ -71,4 +71,5 @@ accuracy
 Generate predictions for the test.
 ```{r}
 pred <- predict(modFit, test); 
+pred
 ```
