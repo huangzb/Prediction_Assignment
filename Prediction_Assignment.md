@@ -13,27 +13,14 @@ library(caret)
 
 ```r
 library(kernlab)
+setInternet2(TRUE)
 if (!file.exists("data")){
         dir.create("data")
 }
 fileUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
 download.file(fileUrl, destfile ="./data/pml-train.csv")
-```
-
-```
-## Error: unsupported URL scheme
-```
-
-```r
 fileUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
 download.file(fileUrl, destfile ="./data/pml-test.csv")
-```
-
-```
-## Error: unsupported URL scheme
-```
-
-```r
 dateDownloaded <- date()
 train <- read.csv("./data/pml-train.csv", na.strings=c("NA",""))
 test <- read.csv("./data/pml-test.csv", na.strings=c("NA",""))
@@ -266,13 +253,13 @@ modFit
 ## No pre-processing
 ## Resampling: Cross-Validated (4 fold) 
 ## 
-## Summary of sample sizes: 2945, 2944, 2946, 2946 
+## Summary of sample sizes: 2944, 2946, 2946, 2945 
 ## 
 ## Resampling results across tuning parameters:
 ## 
 ##   mtry  Accuracy  Kappa  Accuracy SD  Kappa SD
-##   2     1         0.9    0.004        0.005   
-##   30    1         0.9    0.007        0.009   
+##   2     1         1      0.003        0.004   
+##   30    1         1      0.004        0.005   
 ##   50    1         0.9    0.009        0.01    
 ## 
 ## Accuracy was used to select the optimal model using  the largest value.
@@ -288,7 +275,7 @@ accuracy
 ```
 
 ```
-## [1] 0.9717
+## [1] 0.9718
 ```
 
 Generate predictions for the test.
@@ -299,6 +286,6 @@ pred
 ```
 
 ```
-##  [1] B A B A A E D D A A B C B A E E A B B B
+##  [1] B A B A A E D B A A B C B A E E A B B B
 ## Levels: A B C D E
 ```

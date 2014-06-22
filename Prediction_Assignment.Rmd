@@ -4,6 +4,7 @@ Download the training and testing dataset from the course website. Read the down
 ```{r}
 library(caret)
 library(kernlab)
+setInternet2(TRUE)
 if (!file.exists("data")){
         dir.create("data")
 }
