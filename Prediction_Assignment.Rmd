@@ -1,0 +1,62 @@
+Title
+========================================================
+Download the training and testing dataset from the course website. Read the downloaded csv files into R. 
+```{r}
+library(caret)
+library(kernlab)
+if (!file.exists("data")){
+        dir.create("data")
+}
+fileUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+#download.file(fileUrl, destfile ="./data/pml-train.csv")
+fileUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+#download.file(fileUrl, destfile ="./data/pml-test.csv")
+dateDownloaded <- date()
+train <- read.csv("./data/pml-train.csv", na.strings=c("NA",""))
+test <- read.csv("./data/pml-test.csv", na.strings=c("NA",""))
+head(train)
+dim(train)
+```
+
+Check number of NAs in different columns.
+```{r}
+sorted_column <- sort(colSums(is.na(train)), decreasing=TRUE)
+sorted_column
+```
+It is clear to see that there are many columns with 19216 NAs on each column. Train has 19622 rows. Thus I remove the columns with many NAs.
+
+Check number of NAs in different columns.
+```{r}
+NAs <- colSums(is.na(train))
+train_nona <- train[,which(NAs == 0)]
+```
+
+It is also clear that X, user_name, raw_timestamp_part_1, raw_timestamp_part_2, cvtd_timestamp, new_window, num_window are not sensor outputs that are related to the body position. The train dataset is thus subsetted to only include the columns with sensor outputs that are related to the body position.
+
+```{r}
+removeIndex <- grep("timestamp|X|user_name|new_window|num_window",names(train_nona))
+train_nona <- train_nona[,-removeIndex]
+```
+
+Check correlated predictors.
+```{r}
+M <- abs(cor(train_nona[, -53]))
+diag(M) <- 0
+which(M>0.8, arr.ind=T)
+```
+
+```{r}
+# make training set
+trainIndex <- createDataPartition(y = train_nona$classe, p=0.2,list=FALSE) # 3927 rows
+trainData <- train_nona[trainIndex,]
+```
+
+```{r}
+library(caret)
+trControl = trainControl(method = "cv", number = 4, allowParallel=TRUE)
+modFit <- train(classe~., data = trainData, method = "rf", prox = TRUE, trControl = trControl)
+modFit
+```
+```{r}
+pred <- predict(modFit, testing); testing$predRight <- pred == testing$classe
+```
